@@ -3,7 +3,7 @@ import { topics } from './topics.js';
 const contentElm = document.getElementById('content');
 const modal = document.getElementById("modal");
 const nextNumber = [];
-const timeoutDuration = 2000;
+const timeoutDuration = 120000;
 
 
 for(let i = 1; i< topics.length;i++)
@@ -50,11 +50,11 @@ function openModal() {
 
     const intervalID = setInterval(updateCountdown, 1000);
 
-    // const timeoutID = setTimeout(() => {
-    //     clearInterval(intervalID);
-    //     console.log('Inside timeout');
-    //     countdownElement.textContent = 'Time up';
-    // }, timeoutDuration);
+    const timeoutID = setTimeout(() => {
+        clearInterval(intervalID);
+        console.log('Inside timeout');
+        // countdownElement.textContent = 'Time up';
+    }, timeoutDuration);
 
 
     function updateCountdown() {
@@ -67,7 +67,7 @@ function openModal() {
             // clearTimeout(timeoutID);
             clearInterval(intervalID);
             console.log('Inside function');
-            countdownElement.textContent = 'Time up';
+            // countdownElement.textContent = 'Time up';
         }
     }
 
