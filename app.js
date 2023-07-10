@@ -1,98 +1,86 @@
+/** @format */
+
 import { topics } from './topics.js';
 
 const contentElm = document.getElementById('content');
-const modal = document.getElementById("modal");
-const nextNumber = [];
+const modal = document.getElementById('modal');
+const countdownElement = document.getElementById('countdown');
+const modalContent = document.getElementById('topic');
+const topicIdElm = document.getElementById('topicId');
+const nextElm = document.getElementById('next');
+
+const nextNumber = new Array(topics.length).fill(0);
 const timeoutDuration = 120000;
 
+nextNumber[0] = 1;
 
-for(let i = 1; i< topics.length;i++)
-    nextNumber[i] = 0;
+// Generating random number to display on screen as next number
+const randomNum = () => {
+	let randNextNumber;
 
-for(let i = 0;i < topics.length ;i++){
-    const linkElm = document.createElement('a');
-    linkElm.setAttribute('id', 'link');
-    linkElm.setAttribute('name', i);
-    linkElm.textContent = i+1;
-    contentElm.appendChild(linkElm);
-}
+	while (true) {
+		randNextNumber = Math.floor(Math.random() * topics.length);
+		if (nextNumber[randNextNumber] === 0) {
+			nextNumber[randNextNumber]++;
+			// console.log(nextNumber);
+			break;
+		}
+	}
 
-const openBtn = document.querySelectorAll("#link");
+	return randNextNumber;
+};
 
-// console.log(topics);
-function openModal() {
-    modal.style.display = "block";
+const openModal = (event) => {
+	modal.style.display = 'block';
+	// console.log(event);
+	nextElm.textContent = 'Next number is ' + (randomNum() + 1);
 
-    const modalContent = document.getElementById("topic");
-    const topicIdElm  = document.getElementById("topicId");
-    const nextElm = document.getElementById("next");
-    const countdownElement = document.getElementById('countdown');
+	topicIdElm.textContent = 'Topic-' + (+event.target.name + 1);
+	modalContent.textContent = topics[+event.target.name].topic;
 
-    let randNextNumber;
+	countDown(event);
+};
 
-    while(true){
-        randNextNumber = Math.floor(Math.random() * 70)
-        if(nextNumber[randNextNumber] === 0){
-            nextNumber[randNextNumber]++;
-            console.log(nextNumber);
-            break;
-        }
-    }
+// Timer for 120 seconds
+const countDown = (event) => {
+	const targetTime = Date.now() + timeoutDuration;
+	const intervalID = setInterval(updateCountdown, 1000);
 
-    nextElm.innerHTML = 'Next number is ' + (randNextNumber+1);
+	function updateCountdown() {
+		const currentTime = Date.now();
+		const timeLeft = targetTime - currentTime;
 
-    topicIdElm.innerText = 'Topic-' + (+event.target.name+1);
-    modalContent.textContent = topics[+event.target.name].topic;
-    // console.log((event.target.name);
-    timer(event);
+		countdownElement.textContent = `Time left: ${Math.ceil(
+			timeLeft / 1000
+		)} seconds`;
 
-    const targetTime = Date.now() + timeoutDuration;
+		if (timeLeft <= 0) {
+			clearInterval(intervalID);
+			closeModal();
+			// console.log(event);
+			event.target.style.display = 'none';
+			countdownElement.textContent = 'Time left: 120 seconds';
+		}
+	}
+};
 
-    const intervalID = setInterval(updateCountdown, 1000);
+const closeModal = () => {
+	modal.style.display = 'none';
+};
 
-    const timeoutID = setTimeout(() => {
-        clearInterval(intervalID);
-        console.log('Inside timeout');
-        // countdownElement.textContent = 'Time up';
-    }, timeoutDuration);
+// Creating tiles on the screen
+const renderTiles = () => {
+	for (let i = 0; i < topics.length; i++) {
+		const linkElm = document.createElement('a');
+		linkElm.setAttribute('id', 'link');
+		linkElm.setAttribute('name', i);
+		linkElm.textContent = i < 9 ? `0${i + 1}` : i + 1;
+		contentElm.appendChild(linkElm);
+	}
+};
 
+contentElm.addEventListener('click', (event) => {
+	if (event.target.tagName === 'A') openModal(event);
+});
 
-    function updateCountdown() {
-        const currentTime = Date.now();
-        const timeLeft = targetTime - currentTime;
-    
-        countdownElement.textContent = `Time left: ${Math.ceil(timeLeft / 1000)} seconds`;
-    
-        if (timeLeft <= 0) {
-            // clearTimeout(timeoutID);
-            clearInterval(intervalID);
-            console.log('Inside function');
-            // countdownElement.textContent = 'Time up';
-        }
-    }
-
-}
-
-
-
-function timer(event) {
-    setTimeout(() => {
-        // console.log('fds');
-        closeModal();
-        event.target.style.display = "none";
-    }, timeoutDuration);
-}
-
-function closeModal() {
-  modal.style.display = "none";
-}
-
-// console.log(openBtn);
-for(let i=0;i<topics.length;i++)
-    openBtn[i].addEventListener("click", openModal  );
-
-// window.addEventListener("click", function(event) {
-//     if (event.target == modal) {
-//       closeModal();
-//     }
-//   });
+renderTiles();
