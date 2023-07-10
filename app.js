@@ -37,6 +37,7 @@ const openModal = (event) => {
 
 	topicIdElm.textContent = 'Topic-' + (+event.target.name + 1);
 	modalContent.textContent = topics[+event.target.name].topic;
+	countdownElement.textContent = 'Time left: 120 seconds';
 
 	countDown(event);
 };
@@ -59,7 +60,6 @@ const countDown = (event) => {
 			closeModal();
 			// console.log(event);
 			event.target.style.display = 'none';
-			countdownElement.textContent = 'Time left: 120 seconds';
 		}
 	}
 };
