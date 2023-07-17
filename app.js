@@ -9,19 +9,20 @@ const modalContent = document.getElementById('topic');
 const topicIdElm = document.getElementById('topicId');
 const nextElm = document.getElementById('next');
 
-const nextNumber = new Array(topics.length).fill(0);
+const nextNumber = [];
 const timeoutDuration = 120000;
 
-nextNumber[0] = 1;
+nextNumber.push(1);
 
 // Generating random number to display on screen as next number
-const randomNum = () => {
+export const randomNum = () => {
 	let randNextNumber;
 
 	while (true) {
 		randNextNumber = Math.floor(Math.random() * topics.length);
-		if (nextNumber[randNextNumber] === 0) {
-			nextNumber[randNextNumber]++;
+		// console.log(randNextNumber);
+		if (!nextNumber.includes(randNextNumber + 1)) {
+			nextNumber.push(randNextNumber + 1);
 			// console.log(nextNumber);
 			break;
 		}
@@ -30,7 +31,7 @@ const randomNum = () => {
 	return randNextNumber;
 };
 
-const openModal = (event) => {
+export const openModal = (event) => {
 	modal.style.display = 'block';
 	// console.log(event);
 	nextElm.textContent = 'Next number is ' + (randomNum() + 1);
@@ -43,7 +44,7 @@ const openModal = (event) => {
 };
 
 // Timer for 120 seconds
-const countDown = (event) => {
+export const countDown = (event) => {
 	const targetTime = Date.now() + timeoutDuration;
 	const intervalID = setInterval(updateCountdown, 1000);
 
@@ -64,12 +65,12 @@ const countDown = (event) => {
 	}
 };
 
-const closeModal = () => {
+export const closeModal = () => {
 	modal.style.display = 'none';
 };
 
 // Creating tiles on the screen
-const renderTiles = () => {
+export const renderTiles = () => {
 	for (let i = 0; i < topics.length; i++) {
 		const linkElm = document.createElement('a');
 		linkElm.setAttribute('id', 'link');
